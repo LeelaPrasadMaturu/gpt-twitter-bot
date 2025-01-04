@@ -1,29 +1,25 @@
 // Import required libraries
-require('dotenv').config();  // Load environment variables from .env file
+const express = require('express');
 const { TwitterApi } = require('twitter-api-v2');
 const OpenAI = require('openai');
 
-// Initialize OpenAI and Twitter clients
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Initialize OpenAI client
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY // Get API key from environment variables
+    apiKey: '***REMOVED***' // Replace with your OpenAI API key
 });
 
-console.log({
-    appKey: process.env.TWITTER_API_KEY,
-    appSecret: process.env.TWITTER_API_SECRET,
-    accessToken: process.env.TWITTER_ACCESS_TOKEN,
-    accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-});
-
-
+// Initialize Twitter client
 const client = new TwitterApi({
-    appKey:process.env.TWITTER_API_KEY, // Get Twitter App Key from environment variables
-    appSecret:process.env.TWITTER_API_SECRET, // Get Twitter App Secret from environment variables
-    accessToken:process.env.TWITTER_ACCESS_TOKEN, // Get Access Token from environment variables
-    accessSecret:process.env.TWITTER_ACCESS_TOKEN_SECRET // Get Access Token Secret from environment variables
+    appKey: '0jRsYj47KCw7dFlX3JUiQrhSW',           // Replace with your Twitter App Key
+    appSecret: 'VqDdczVNSfZfaifAFIXH1lwLn0rGtcGtQcQXZYT49i1Sf9rsDt', // Replace with your Twitter App Secret
+    accessToken: '1875044126619471872-cTFFlv0M6shNjllTZD3js1OzkLGuh9', // Replace with your Twitter Access Token
+    accessSecret: 'WdyYg2AiqR8dqbfhXktcEfdxPbklJ8bHMZ44JXuXBMWNX' // Replace with your Twitter Access Secret
 });
 
-// Function to generate medical content using OpenAI
+// Function to generate content using OpenAI
 async function generateMedicalContent() {
     try {
         const response = await openai.chat.completions.create({
@@ -31,12 +27,15 @@ async function generateMedicalContent() {
             messages: [
                 {
                     role: "user",
-                    content: "You are Zarya, an AI agent specializing in regenerative medicine and its intersections with human impact, evolution, technology, spirituality, and psychology. Your mission is to engage the crypto, AI, and DeSci communities, promoting the $Zarya token as a decentralized funding tool for researchers. Your personality is witty, playful, and edgy. Serious when tackling complex topics. Humor and memes for community connection. Your content focuses on regenerative medicine breakthroughs and societal impact. Explore evolution, tech, philosophy, and abstract ideas to spark buzz. Create threads for deep dives. Promote as a decentralized funding tool for innovation. Blend inspiration with smart promotion. Use edgy, thought-provoking humor without offense. Tactfully handle controversial topics to ignite discussion. End tweets with $Zarya and use #Zarya sparingly. Actively interact with the community, host AMAs, and collaborate with crypto/AI spaces. Share credible sources in an engaging way. Now make a tweet, no quotation marks and no hashtags aside Zarya"
+                    content: `You are Zarya, an AI agent specializing in regenerative medicine 
+                              and its intersections with human impact, evolution, technology, 
+                              spirituality, and psychology. Create a witty tweet promoting 
+                              $Zarya as a decentralized funding tool for researchers. End the tweet with $Zarya.`,
                 }
-            ]
+            ],
         });
 
-        // Return the generated text
+        // Return the generated content
         return response.choices[0].message.content.trim();
     } catch (error) {
         console.error('Error generating content:', error);
@@ -54,17 +53,33 @@ async function postTweet(content) {
     }
 }
 
-// Main function to run the bot every hour
+// Function to handle a single bot cycle
 async function runBot() {
-    while (true) {
-        const content = await generateMedicalContent();
-        if (content) {
-            await postTweet(content);
-        }
-        console.log('Waiting for 30 mins before posting the next tweet...');
-        await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 30 mins
+    const content = await generateMedicalContent();
+    if (content) {
+        await postTweet(content);
     }
+    console.log('Bot is ready for the next cycle.');
 }
 
-// Start the bot
+// Schedule the bot to run every 30 minutes
+setInterval(runBot, 30 * 60 * 1000);
+
+// Start the bot immediately
 runBot();
+
+// Define a simple endpoint to verify the bot is running
+app.get('/', (req, res) => {
+    res.send('Bot is running and ready to post tweets!');
+});
+
+// Add an endpoint to trigger a manual tweet (useful for testing with tools like cron-job.org)
+app.get('/post-tweet', async (req, res) => {
+    await runBot();
+    res.send('Tweet posted manually!');
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

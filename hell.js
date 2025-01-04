@@ -1,18 +1,30 @@
+
 // Import required libraries
-require('dotenv').config();
+const express = require('express');
+const app = express();
 const { TwitterApi } = require('twitter-api-v2');
 const OpenAI = require('openai');
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('Bot is running!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
 
 // Initialize OpenAI and Twitter clients
 const openai = new OpenAI({
-    apiKey:process.env.OPENAI_API_KEY // Replace with your OpenAI API key
+    apiKey: '***REMOVED***' // Replace with your OpenAI API key
 });
 
 const client = new TwitterApi({
-    appKey:`${process.env.TWITTER_API_KEY}`,           // Replace with your Twitter App Key
-    appSecret:`${process.env.TWITTER_API_SECRET}`, // Replace with your Twitter App Secret
-    accessToken:`${process.env.TWITTER_ACCESS_TOKEN}`, // Replace with your Twitter Access Token
-    accessSecret: `${process.env.TWITTER_ACCESS_TOKEN_SECRET}`// Replace with your Twitter Access Secret
+    appKey: '0jRsYj47KCw7dFlX3JUiQrhSW',           // Replace with your Twitter App Key
+    appSecret: 'VqDdczVNSfZfaifAFIXH1lwLn0rGtcGtQcQXZYT49i1Sf9rsDt', // Replace with your Twitter App Secret
+    accessToken: '1875044126619471872-cTFFlv0M6shNjllTZD3js1OzkLGuh9', // Replace with your Twitter Access Token
+    accessSecret: 'WdyYg2AiqR8dqbfhXktcEfdxPbklJ8bHMZ44JXuXBMWNX' // Replace with your Twitter Access Secret
 });
 
 // Function to generate medical content using OpenAI
@@ -47,16 +59,29 @@ async function postTweet(content) {
 }
 
 // Main function to run the bot every hour
+// async function runBot() {
+//     while (true) {
+//         const content = await generateMedicalContent();
+//         if (content) {
+//             await postTweet(content);
+//         }
+//         console.log('Waiting for 30 mins before posting the next tweet...');
+//         await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 1 hour
+//     }
+// }
+
+
 async function runBot() {
-    while (true) {
-        const content = await generateMedicalContent();
-        if (content) {
-            await postTweet(content);
-        }
-        console.log('Waiting for 30 mins before posting the next tweet...');
-        await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 1 hour
+    const content = await generateMedicalContent();
+    if (content) {
+        await postTweet(content);
     }
+    console.log('Bot is ready for the next cycle.');
 }
+
+// Schedule the bot to run every 30 minutes
+setInterval(runBot, 30 * 60 * 1000);
+
 
 // Start the bot
 runBot();
