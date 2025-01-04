@@ -1,26 +1,18 @@
 // Import required libraries
-require('dotenv').config();  // Load environment variables from .env file
+require('dotenv').config();
 const { TwitterApi } = require('twitter-api-v2');
 const OpenAI = require('openai');
 
 // Initialize OpenAI and Twitter clients
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY // Get API key from environment variables
+    apiKey:process.env.OPENAI_API_KEY // Replace with your OpenAI API key
 });
-
-console.log({
-    appKey: process.env.TWITTER_API_KEY,
-    appSecret: process.env.TWITTER_API_SECRET,
-    accessToken: process.env.TWITTER_ACCESS_TOKEN,
-    accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-});
-
 
 const client = new TwitterApi({
-    appKey:process.env.TWITTER_API_KEY, // Get Twitter App Key from environment variables
-    appSecret:process.env.TWITTER_API_SECRET, // Get Twitter App Secret from environment variables
-    accessToken:process.env.TWITTER_ACCESS_TOKEN, // Get Access Token from environment variables
-    accessSecret:process.env.TWITTER_ACCESS_TOKEN_SECRET // Get Access Token Secret from environment variables
+    appKey:`${process.env.TWITTER_API_KEY}`,           // Replace with your Twitter App Key
+    appSecret:`${process.env.TWITTER_API_SECRET}`, // Replace with your Twitter App Secret
+    accessToken:`${process.env.TWITTER_ACCESS_TOKEN}`, // Replace with your Twitter Access Token
+    accessSecret: `${process.env.TWITTER_ACCESS_TOKEN_SECRET}`// Replace with your Twitter Access Secret
 });
 
 // Function to generate medical content using OpenAI
@@ -62,7 +54,7 @@ async function runBot() {
             await postTweet(content);
         }
         console.log('Waiting for 30 mins before posting the next tweet...');
-        await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 30 mins
+        await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 1 hour
     }
 }
 
