@@ -84,8 +84,20 @@
 
 
 // Import required libraries
+const express = require('express');
+const app = express();
 const { TwitterApi } = require('twitter-api-v2');
 const OpenAI = require('openai');
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('Bot is running!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
 
 // Initialize OpenAI and Twitter clients
 const openai = new OpenAI({
@@ -131,16 +143,29 @@ async function postTweet(content) {
 }
 
 // Main function to run the bot every hour
+// async function runBot() {
+//     while (true) {
+//         const content = await generateMedicalContent();
+//         if (content) {
+//             await postTweet(content);
+//         }
+//         console.log('Waiting for 30 mins before posting the next tweet...');
+//         await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 1 hour
+//     }
+// }
+
+
 async function runBot() {
-    while (true) {
-        const content = await generateMedicalContent();
-        if (content) {
-            await postTweet(content);
-        }
-        console.log('Waiting for 30 mins before posting the next tweet...');
-        await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 1 hour
+    const content = await generateMedicalContent();
+    if (content) {
+        await postTweet(content);
     }
+    console.log('Bot is ready for the next cycle.');
 }
+
+// Schedule the bot to run every 30 minutes
+setInterval(runBot, 30 * 60 * 1000);
+
 
 // Start the bot
 runBot();
