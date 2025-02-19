@@ -1,3 +1,34 @@
+# Twitter Posting Bot using OpenAI GPT Models  
+
+This bot automatically generates content using **OpenAI's GPT models** and posts tweets using the **Twitter API**.  
+
+## 🚀 Installation & Setup  
+
+### **Step 1: Clone the Repository**  
+```sh
+git clone https://github.com/LeelaPrasadMaturu/twitter-posting-llm.git
+cd twitter-posting-llm
+```
+
+### **Step 2: Install Dependencies** 
+``
+npm install
+``
+
+### **Step 3: Set Up API Keys**  
+1. Get your OpenAI API key from OpenAI.
+2. Get your Twitter API keys from Twitter Developer Portal.
+3. Create a .env file in the project root and add the keys 
+
+
+### **Step 4: Run the Bot**  
+``
+node twitterPostingBot.js
+``
+
+-----
+
+
 # Challenge: Automating Tweets at Regular Intervals
 
 The primary challenge involves tweeting at consistent intervals, such as every 30 minutes or 1 hour.
