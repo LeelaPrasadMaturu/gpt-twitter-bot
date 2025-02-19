@@ -26,6 +26,26 @@ npm install
 node twitterPostingBot.js
 ``
 
+
+### 📌 Features
+- ✅ Uses OpenAI GPT models to generate content
+- ✅ Automatically posts tweets at scheduled intervals
+- ✅ Supports manual tweet posting via API endpoint
+- ✅ Easy-to-configure environment variables
+
+
+### 🛠️ How to Manually Trigger a Tweet
+You can manually post a tweet using this endpoint (useful for scheduling services like cron-job.org):
+``
+GET /post-tweet
+``
+
+##### Example (if running locally):
+``
+http://localhost:3000/post-tweet
+``
+
+
 -----
 
 
