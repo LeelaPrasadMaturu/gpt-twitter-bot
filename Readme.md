@@ -6,7 +6,7 @@ This bot automatically generates content using **OpenAI's GPT models** and posts
 
 ### **Step 1: Clone the Repository**  
 ```sh
-git clone https://github.com/LeelaPrasadMaturu/twitter-posting-llm.git
+git clone https://github.com/LeelaPrasadMaturu/gpt-twitter-bot.git
 cd twitter-posting-llm
 ```
 
