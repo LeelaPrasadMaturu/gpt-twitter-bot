@@ -6,9 +6,11 @@ const { TwitterApi } = require('twitter-api-v2');
 const OpenAI = require('openai');
 const PORT = process.env.PORT || 3000;
 
+
 app.get('/', (req, res) => {
     res.send('Bot is running!');
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
@@ -20,6 +22,7 @@ const openai = new OpenAI({
     apiKey: '***REMOVED***' // Replace with your OpenAI API key
 });
 
+
 const client = new TwitterApi({
     appKey: '0jRsYj47KCw7dFlX3JUiQrhSW',           // Replace with your Twitter App Key
     appSecret: 'VqDdczVNSfZfaifAFIXH1lwLn0rGtcGtQcQXZYT49i1Sf9rsDt', // Replace with your Twitter App Secret
@@ -27,7 +30,8 @@ const client = new TwitterApi({
     accessSecret: 'WdyYg2AiqR8dqbfhXktcEfdxPbklJ8bHMZ44JXuXBMWNX' // Replace with your Twitter Access Secret
 });
 
-// Function to generate medical content using OpenAI
+
+// Function to generate content using OpenAI
 async function generateMedicalContent() {
     try {
         const response = await openai.chat.completions.create({
@@ -58,18 +62,6 @@ async function postTweet(content) {
     }
 }
 
-// Main function to run the bot every hour
-// async function runBot() {
-//     while (true) {
-//         const content = await generateMedicalContent();
-//         if (content) {
-//             await postTweet(content);
-//         }
-//         console.log('Waiting for 30 mins before posting the next tweet...');
-//         await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Wait 1 hour
-//     }
-// }
-
 
 async function runBot() {
     const content = await generateMedicalContent();
@@ -80,8 +72,17 @@ async function runBot() {
 }
 
 // Schedule the bot to run every 30 minutes
-setInterval(runBot, 30 * 60 * 1000);
+setInterval(runBot, 30 * 60 * 1000);  // Setinterval or node-schedule modules works for local , when we moved into production line , it not
 
 
-// Start the bot
+
+// Add an endpoint to trigger a manual tweet (useful for testing with tools like cron-job.org)
+app.get('/post-tweet', async (req, res) => {
+    await runBot();
+    res.send('Tweet posted manually!');
+
+});
+
+
+// Start the bot immediately
 runBot();
